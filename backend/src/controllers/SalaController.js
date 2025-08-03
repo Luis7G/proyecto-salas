@@ -17,7 +17,6 @@ class SalaController {
     // Estado inicial de las salas. Esto es lo que se actualizará.
     this.salas = {
       "SALA-01": { ocupada: false, usuario: null, tiempoInicio: null },
-      "SALA-02": { ocupada: false, usuario: null, tiempoInicio: null },
     };
 
     // Es importante "atar" el 'this' a los métodos para que no pierdan el contexto
