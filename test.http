@@ -1,0 +1,37 @@
+### Realizar un check-in de Ana Torres en la SALA-01
+# El UID y salaId coinciden con los datos en SalaController.js
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{
+  "rfidTag": "A1B2C3D4",
+  "salaId": "SALA-01"
+}
+
+### Realizar un check-in de Carlos Vera en la SALA-02
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{
+  "rfidTag": "5E6F7G8H",
+  "salaId": "SALA-02"
+}
+
+### Realizar un check-out de Ana Torres de la SALA-01
+# Se envía el mismo UID para la misma sala
+POST http://localhost:3000/api/registro
+Content-Type: application/json
+
+{
+  "rfidTag": "A1B2C3D4",
+  "salaId": "SALA-01"
+}
+
+
+### Enviar una alerta de presencia para la SALA-01
+POST http://localhost:3000/api/alerta-presencia
+Content-Type: application/json
+
+{
+    "salaId": "SALA-01"
+}
