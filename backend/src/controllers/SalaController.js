@@ -9,9 +9,8 @@ class SalaController {
     // En un proyecto real, esto vendría de una base de datos.
     // Para el proyecto, este objeto es suficiente.
     this.users = {
-      "A1B2C3D4": { name: "Ana Torres", initials: "AT" },
-      "5E6F7G8H": { name: "Carlos Vera", initials: "CV" },
-      // Agrega aquí los UIDs de tus tarjetas reales cuando las tengas
+      "6354FCF7": { name: "Ana Torres", initials: "AT" },
+      63724210: { name: "Carlos Vera", initials: "CV" },
     };
 
     // Estado inicial de las salas. Esto es lo que se actualizará.
@@ -26,6 +25,7 @@ class SalaController {
 
   // Método que se ejecuta cuando el Wemos envía un registro RFID
   handleRegistro(req, res) {
+    console.log(req.body);
     const { rfidTag, salaId } = req.body;
 
     // Validar que los datos llegaron
@@ -57,17 +57,23 @@ class SalaController {
       sala.ocupada = true;
       sala.usuario = user;
       sala.tiempoInicio = Date.now(); // Guarda el timestamp actual en milisegundos
-      responseToWemos = { status: "CHECK_IN_SUCCESS", userName: user.name, initials: user.initials };
+      responseToWemos = {
+        status: "CHECK_IN_SUCCESS",
+        userName: user.name,
+        initials: user.initials,
+      };
     } else {
       // La sala está ocupada por otra persona
       console.log(`ACCESO DENEGADO: ${salaId} ya está ocupada.`);
-      return res.status(409).json({ error: `La sala ya está ocupada por ${sala.usuario.name}` });
+      return res
+        .status(409)
+        .json({ error: `La sala ya está ocupada por ${sala.usuario.name}` });
     }
 
     // --- EMISIÓN DE EVENTO WEBSOCKET ---
     // Envía el estado actualizado de TODAS las salas a TODOS los clientes web
-    this.io.emit('update-salas', this.salas);
-    console.log('Estado de salas actualizado y enviado al frontend.');
+    this.io.emit("update-salas", this.salas);
+    console.log("Estado de salas actualizado y enviado al frontend.");
 
     // Envía una respuesta al Wemos con las iniciales (si es un check-in)
     res.status(200).json(responseToWemos);
@@ -79,7 +85,10 @@ class SalaController {
     console.log(`ALERTA: Movimiento detectado en ${salaId}`);
 
     // Emite un evento de alerta al frontend
-    this.io.emit('alerta-movimiento', { salaId, msg: `¡Movimiento detectado en la sala ${salaId}!` });
+    this.io.emit("alerta-movimiento", {
+      salaId,
+      msg: `¡Movimiento detectado en la sala ${salaId}!`,
+    });
 
     // Responde al Wemos
     res.status(200).json({ status: "ALERTA_RECIBIDA" });
